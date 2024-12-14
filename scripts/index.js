@@ -7,14 +7,14 @@ function addCard(item, deleteCard) {
     const card = cardTemplate.querySelector(".card").cloneNode(true);
     card.querySelector(".card__title").textContent = item.name;
     const cardImage = card.querySelector(".card__image");
-    cardImage.setAttribute("src", item.link);
-    cardImage.setAttribute("alt", `${item.name}`);
-    card.querySelector('.card__delete-button').addEventListener('click', deleteCard);    
+    cardImage.src = item.link;
+    cardImage.alt = item.name;
+    card.querySelector('.card__delete-button').addEventListener('click', () => deleteCard(card));    
     return card;
 }
 // @todo: Функция удаления карточки
-function deleteCard(evt) {
-    evt.target.closest('.card').remove();
-}
+function deleteCard(cardElement) {  
+    cardElement.remove(); 
+}; 
 // @todo: Вывести карточки на страницу
 initialCards.forEach(item => placesList.append(addCard(item, deleteCard)));
