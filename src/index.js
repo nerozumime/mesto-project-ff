@@ -7,7 +7,6 @@ import {createNewCard, addCard, deleteCard, likeCard} from './scripts/card'
 const placesList = document.querySelector(".places__list");
 initialCards.forEach(item => placesList.append(addCard(item, deleteCard, likeCard, showFullImage)));
 
-
 // popupEditProfile
 const buttonProfileEdit = document.querySelector('.profile__edit-button');
 const popupProfileEdit = document.querySelector('.popup_type_edit');
@@ -33,7 +32,7 @@ function handleFormSubmit(evt) {
 buttonProfileEdit.addEventListener('click', ()=> openModal(popupProfileEdit));
 formElement.addEventListener('submit', handleFormSubmit);
 
-// popupAddNewPlace
+// popupAddNewPlace 
 const buttonAddNewPlace = document.querySelector('.profile__add-button');
 const formAddNewPlace = document.forms['new-place'];
 const popupAddNewPlace = document.querySelector('.popup_type_new-card');
