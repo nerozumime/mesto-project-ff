@@ -1,5 +1,3 @@
-// const archyz = new URL('https://pictures.s3.yandex.net/frontend-developer/cards-compressed/arkhyz.jpg', import.meta.url); 
-
 export const initialCards = [
     {
       name: "Архыз",
