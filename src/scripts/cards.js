@@ -1,4 +1,3 @@
-import { openModal } from "./modal";
 export const initialCards = [
     {
       name: "Архыз",
@@ -49,14 +48,3 @@ export function likeCard(cardElement) {
   cardElement.querySelector('.card__like-button').classList.toggle('card__like-button_is-active'); 
   console.log(cardElement);
 }; 
-
-export function showFullImage(name, link){
-    const popupShowFullImage = document.querySelector('.popup_type_image');
-    const imageInputTitle = popupShowFullImage.querySelector('.popup__caption');
-    const imageInputLink = popupShowFullImage.querySelector('.popup__image');
-    imageInputTitle.textContent = name;
-    console.log(name)
-    imageInputLink.setAttribute('src', link);
-    openModal(popupShowFullImage);
-}
-

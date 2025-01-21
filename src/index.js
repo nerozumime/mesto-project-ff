@@ -1,19 +1,18 @@
 import './pages/index.css'; // импорт главного файла стилей 
-import {initialCards, addCard, deleteCard, likeCard, showFullImage} from './scripts/cards'
+import {initialCards, addCard, deleteCard, likeCard} from './scripts/cards'
 import {closeModal, openModal} from './scripts/modal'
-import {createCard} from './scripts/card'
+import {createNewCard} from './scripts/card'
 
 // adding cards on load
 const placesList = document.querySelector(".places__list");
 initialCards.forEach(item => placesList.append(addCard(item, deleteCard, likeCard, showFullImage)));
 
 
-
 // popupEditProfile
 const buttonProfileEdit = document.querySelector('.profile__edit-button');
 const popupProfileEdit = document.querySelector('.popup_type_edit');
 const popupContent = document.querySelector('.popup__content');
-const formElement = document.querySelector('.popup__form');
+const formElement = document.forms['edit-profile'];
 
 const profileInfo = document.querySelector('.profile__info');
 const profileTitle = profileInfo.querySelector('.profile__title');
@@ -41,10 +40,21 @@ const popupAddNewPlace = document.querySelector('.popup_type_new-card');
 
 export function handleAddNewPlaceSubmit(evt) {
   evt.preventDefault(); 
-  placesList.prepend(addCard(createCard(), deleteCard, likeCard, showFullImage));
+  placesList.prepend(addCard(createNewCard(), deleteCard, likeCard, showFullImage));
   closeModal();
 }
 
 buttonAddNewPlace.addEventListener('click', ()=> openModal(popupAddNewPlace));
 formAddNewPlace.addEventListener('submit', handleAddNewPlaceSubmit);
+
+
+function showFullImage(name, link){
+  const popupShowFullImage = document.querySelector('.popup_type_image');
+  const imageInputTitle = popupShowFullImage.querySelector('.popup__caption');
+  const imageInputLink = popupShowFullImage.querySelector('.popup__image');
+  imageInputTitle.textContent = name;
+  console.log(name)
+  imageInputLink.setAttribute('src', link);
+  openModal(popupShowFullImage);
+}
 
