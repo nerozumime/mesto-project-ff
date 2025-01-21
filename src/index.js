@@ -1,11 +1,11 @@
 import './pages/index.css'; // импорт главного файла стилей 
-import {initialCards, addCard, deleteCard, likeCard} from './scripts/cards'
+import {initialCards, addCard, deleteCard, likeCard, showFullImage} from './scripts/cards'
 import {closeModal, openModal} from './scripts/modal'
 import {createCard} from './scripts/card'
 
 // adding cards on load
 const placesList = document.querySelector(".places__list");
-initialCards.forEach(item => placesList.append(addCard(item, deleteCard, likeCard)));
+initialCards.forEach(item => placesList.append(addCard(item, deleteCard, likeCard, showFullImage)));
 
 
 
@@ -41,10 +41,23 @@ const popupAddNewPlace = document.querySelector('.popup_type_new-card');
 
 export function handleAddNewPlaceSubmit(evt) {
   evt.preventDefault(); 
-  placesList.prepend(addCard(createCard(), deleteCard, likeCard));
+  placesList.prepend(addCard(createCard(), deleteCard, likeCard, showFullImage));
   closeModal();
 }
 
 buttonAddNewPlace.addEventListener('click', ()=> openModal(popupAddNewPlace));
 formAddNewPlace.addEventListener('submit', handleAddNewPlaceSubmit);
 
+
+// popupShowFullImage
+const popupShowFullImage = document.querySelector('.popup_type_image');
+
+placesList.addEventListener('click', (evt)=>{
+    if(evt.target.classList.contains('card__image')){
+      const imageInputTitle = popupShowFullImage.querySelector('.popup__caption');
+      const imageInputLink = popupShowFullImage.querySelector('.popup__image');
+      imageInputTitle.textContent = evt.target.alt;
+      imageInputLink.setAttribute('src', evt.target.src);
+      openModal(popupShowFullImage);
+    }
+})
