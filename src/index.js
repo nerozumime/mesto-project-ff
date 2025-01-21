@@ -1,11 +1,11 @@
 import './pages/index.css'; // импорт главного файла стилей 
-import {initialCards, addCard, deleteCard} from './scripts/cards'
+import {initialCards, addCard, deleteCard, likeCard} from './scripts/cards'
 import {closeModal, openModal} from './scripts/modal'
 import {createCard} from './scripts/card'
 
 // adding cards on load
 const placesList = document.querySelector(".places__list");
-initialCards.forEach(item => placesList.append(addCard(item, deleteCard)));
+initialCards.forEach(item => placesList.append(addCard(item, deleteCard, likeCard)));
 
 
 
@@ -41,7 +41,7 @@ const popupAddNewPlace = document.querySelector('.popup_type_new-card');
 
 export function handleAddNewPlaceSubmit(evt) {
   evt.preventDefault(); 
-  placesList.prepend(addCard(createCard(), deleteCard));
+  placesList.prepend(addCard(createCard(), deleteCard, likeCard));
   closeModal();
 }
 
