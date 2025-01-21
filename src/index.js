@@ -22,6 +22,7 @@ const profileEditInputDescription = popupContent.querySelector('.popup__input_ty
 profileEditInputName.value = profileTitle.textContent;
 profileEditInputDescription.value = profileDescription.textContent;
 
+
 function handleFormSubmit(evt) {
     evt.preventDefault(); 
     profileDescription.textContent = profileEditInputDescription.value;
