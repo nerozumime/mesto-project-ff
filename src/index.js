@@ -1,7 +1,7 @@
 import './pages/index.css'; // импорт главного файла стилей 
-import {initialCards, addCard, deleteCard, likeCard} from './scripts/cards'
+import {initialCards} from './scripts/cards'
 import {closeModal, openModal} from './scripts/modal'
-import {createNewCard} from './scripts/card'
+import {createNewCard, addCard, deleteCard, likeCard} from './scripts/card'
 
 // adding cards on load
 const placesList = document.querySelector(".places__list");
@@ -38,7 +38,7 @@ const buttonAddNewPlace = document.querySelector('.profile__add-button');
 const formAddNewPlace = document.forms['new-place'];
 const popupAddNewPlace = document.querySelector('.popup_type_new-card');
 
-export function handleAddNewPlaceSubmit(evt) {
+function handleAddNewPlaceSubmit(evt) {
   evt.preventDefault(); 
   placesList.prepend(addCard(createNewCard(), deleteCard, likeCard, showFullImage));
   closeModal();
@@ -47,14 +47,17 @@ export function handleAddNewPlaceSubmit(evt) {
 buttonAddNewPlace.addEventListener('click', ()=> openModal(popupAddNewPlace));
 formAddNewPlace.addEventListener('submit', handleAddNewPlaceSubmit);
 
-
+// popupShowFullImage
 function showFullImage(name, link){
   const popupShowFullImage = document.querySelector('.popup_type_image');
   const imageInputTitle = popupShowFullImage.querySelector('.popup__caption');
   const imageInputLink = popupShowFullImage.querySelector('.popup__image');
   imageInputTitle.textContent = name;
-  console.log(name)
   imageInputLink.setAttribute('src', link);
   openModal(popupShowFullImage);
 }
 
+// Every popup is animated
+document.querySelectorAll('.popup').forEach((item)=> {
+  item.classList.add('popup_is-animated');
+})

@@ -1,6 +1,5 @@
 export function closeModal(){
   document.querySelector('.popup_is-opened').removeEventListener('click', closeModal);
-  document.querySelector('.popup_is-animated').classList.remove('popup_is-animated');
   document.querySelector('.popup_is-opened').classList.remove('popup_is-opened');
   document.querySelector('.popup__close').removeEventListener('click', closeModal);
   document.removeEventListener('keydown', closeModalWithEsc);
@@ -13,7 +12,7 @@ function closeModalWithEsc(evt){
 }
 
 export function openModal(modal){
-  modal.classList.add('popup_is-animated');
+  //modal.classList.add('popup_is-animated');
   modal.classList.add('popup_is-opened');
   modal.querySelector('.popup__close').addEventListener('click', closeModal);
   document.addEventListener('keydown', closeModalWithEsc);
