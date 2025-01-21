@@ -1,3 +1,4 @@
+import { openModal } from "./modal";
 export const initialCards = [
     {
       name: "Архыз",
@@ -25,9 +26,9 @@ export const initialCards = [
     }
 ];
 
-// @todo: Темплейт карточки
+
 const cardTemplate = document.querySelector("#card-template").content;
-// @todo: Функция создания карточки
+
 export function addCard(item, deleteCard, likeCard, showFullImage) {
     const card = cardTemplate.querySelector(".card").cloneNode(true);
     card.querySelector(".card__title").textContent = item.name;
@@ -36,10 +37,10 @@ export function addCard(item, deleteCard, likeCard, showFullImage) {
     cardImage.alt = item.name;
     card.querySelector('.card__delete-button').addEventListener('click', () => deleteCard(card));    
     card.querySelector('.card__like-button').addEventListener('click', () => likeCard(card));   
-    cardImage.addEventListener('click', ()=> showFullImage(card)); 
+    cardImage.addEventListener('click', ()=> showFullImage(item.name, item.link)); 
     return card;
 }
-// @todo: Функция удаления карточки
+
 export function deleteCard(cardElement) {  
     cardElement.remove(); 
 }; 
@@ -49,7 +50,13 @@ export function likeCard(cardElement) {
   console.log(cardElement);
 }; 
 
-export function showFullImage(cardElement){
-  const ImageData = {alt: cardElement.querySelector('.card__image').alt, src: cardElement.querySelector('.card__image').src};
+export function showFullImage(name, link){
+    const popupShowFullImage = document.querySelector('.popup_type_image');
+    const imageInputTitle = popupShowFullImage.querySelector('.popup__caption');
+    const imageInputLink = popupShowFullImage.querySelector('.popup__image');
+    imageInputTitle.textContent = name;
+    console.log(name)
+    imageInputLink.setAttribute('src', link);
+    openModal(popupShowFullImage);
 }
 

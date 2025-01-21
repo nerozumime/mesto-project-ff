@@ -48,16 +48,3 @@ export function handleAddNewPlaceSubmit(evt) {
 buttonAddNewPlace.addEventListener('click', ()=> openModal(popupAddNewPlace));
 formAddNewPlace.addEventListener('submit', handleAddNewPlaceSubmit);
 
-
-// popupShowFullImage
-const popupShowFullImage = document.querySelector('.popup_type_image');
-
-placesList.addEventListener('click', (evt)=>{
-    if(evt.target.classList.contains('card__image')){
-      const imageInputTitle = popupShowFullImage.querySelector('.popup__caption');
-      const imageInputLink = popupShowFullImage.querySelector('.popup__image');
-      imageInputTitle.textContent = evt.target.alt;
-      imageInputLink.setAttribute('src', evt.target.src);
-      openModal(popupShowFullImage);
-    }
-})
