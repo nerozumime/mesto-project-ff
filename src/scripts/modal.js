@@ -12,7 +12,6 @@ function closeModalWithEsc(evt){
 }
 
 export function openModal(modal){
-  //modal.classList.add('popup_is-animated');
   modal.classList.add('popup_is-opened');
   modal.querySelector('.popup__close').addEventListener('click', closeModal);
   document.addEventListener('keydown', closeModalWithEsc);
