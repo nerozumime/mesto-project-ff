@@ -1,7 +1,7 @@
 import './pages/index.css'; // импорт главного файла стилей 
 import {initialCards} from './scripts/cards'
 import {closeModal, openModal} from './scripts/modal'
-import {createNewCard, addCard, deleteCard, likeCard} from './scripts/card'
+import {addCard, deleteCard, likeCard} from './scripts/card'
 
 // adding cards on load
 const placesList = document.querySelector(".places__list");
@@ -11,7 +11,13 @@ initialCards.forEach(item => placesList.append(addCard(item, deleteCard, likeCar
 const buttonProfileEdit = document.querySelector('.profile__edit-button');
 const popupProfileEdit = document.querySelector('.popup_type_edit');
 const popupContent = document.querySelector('.popup__content');
-const formElement = document.forms['edit-profile'];
+const formEditProfile = document.forms['edit-profile'];
+
+buttonProfileEdit.addEventListener('click', ()=> {
+  profileEditInputName.value = profileTitle.textContent;
+  profileEditInputDescription.value = profileDescription.textContent;
+  openModal(popupProfileEdit)
+});
 
 const profileInfo = document.querySelector('.profile__info');
 const profileTitle = profileInfo.querySelector('.profile__title');
@@ -19,45 +25,56 @@ const profileDescription = profileInfo.querySelector('.profile__description');
 const profileEditInputName = popupContent.querySelector('.popup__input_type_name');
 const profileEditInputDescription = popupContent.querySelector('.popup__input_type_description');
 
-profileEditInputName.value = profileTitle.textContent;
-profileEditInputDescription.value = profileDescription.textContent;
-
-
-function handleFormSubmit(evt) {
-    evt.preventDefault(); 
-    profileDescription.textContent = profileEditInputDescription.value;
-    profileTitle.textContent = profileEditInputName.value;
-    closeModal();
+function handleProfileEditFormSubmit(evt) {
+  evt.preventDefault(); 
+  profileDescription.textContent = profileEditInputDescription.value;
+  profileTitle.textContent = profileEditInputName.value;
+  closeModal(popupProfileEdit);
 }
-
-buttonProfileEdit.addEventListener('click', ()=> openModal(popupProfileEdit));
-formElement.addEventListener('submit', handleFormSubmit);
+formEditProfile.addEventListener('submit', handleProfileEditFormSubmit);
 
 // popupAddNewPlace 
 const buttonAddNewPlace = document.querySelector('.profile__add-button');
 const formAddNewPlace = document.forms['new-place'];
 const popupAddNewPlace = document.querySelector('.popup_type_new-card');
 
+function createNewCard(){
+  const newPlaceInputTitle = popupAddNewPlace.querySelector('.popup__input_type_card-name');
+  const newPlaceInputLink = popupAddNewPlace.querySelector('.popup__input_type_url');
+  const item = {name: newPlaceInputTitle.value, link: newPlaceInputLink.value};
+  newPlaceInputTitle.value = '';
+  newPlaceInputLink.value = ''
+  return item;
+}
+
 function handleAddNewPlaceSubmit(evt) {
   evt.preventDefault(); 
   placesList.prepend(addCard(createNewCard(), deleteCard, likeCard, showFullImage));
-  closeModal();
+  closeModal(popupAddNewPlace);
 }
 
 buttonAddNewPlace.addEventListener('click', ()=> openModal(popupAddNewPlace));
 formAddNewPlace.addEventListener('submit', handleAddNewPlaceSubmit);
 
 // popupShowFullImage
+const popupShowFullImage = document.querySelector('.popup_type_image');
+const imageInputTitle = popupShowFullImage.querySelector('.popup__caption');
+const imageInputLink = popupShowFullImage.querySelector('.popup__image');
+
 function showFullImage(name, link){
-  const popupShowFullImage = document.querySelector('.popup_type_image');
-  const imageInputTitle = popupShowFullImage.querySelector('.popup__caption');
-  const imageInputLink = popupShowFullImage.querySelector('.popup__image');
   imageInputTitle.textContent = name;
   imageInputLink.setAttribute('src', link);
   openModal(popupShowFullImage);
 }
 
-// Every popup is animated
+
+// Every popup is animated, close with esc and with button-close
 document.querySelectorAll('.popup').forEach((item)=> {
   item.classList.add('popup_is-animated');
+  item.addEventListener('mousedown', (evt) => { 
+    if (evt.target.classList.contains('popup')) { 
+      closeModal(item); 
+    }; 
+  }); 
+  item.querySelector('.popup__close').addEventListener('click', ()=>closeModal(item));
 })
