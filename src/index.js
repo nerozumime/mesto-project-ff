@@ -37,19 +37,14 @@ formEditProfile.addEventListener('submit', handleProfileEditFormSubmit);
 const buttonAddNewPlace = document.querySelector('.profile__add-button');
 const formAddNewPlace = document.forms['new-place'];
 const popupAddNewPlace = document.querySelector('.popup_type_new-card');
-
-function createNewCard(){
-  const newPlaceInputTitle = popupAddNewPlace.querySelector('.popup__input_type_card-name');
-  const newPlaceInputLink = popupAddNewPlace.querySelector('.popup__input_type_url');
-  const item = {name: newPlaceInputTitle.value, link: newPlaceInputLink.value};
-  newPlaceInputTitle.value = '';
-  newPlaceInputLink.value = ''
-  return item;
-}
+const newPlaceInputTitle = popupAddNewPlace.querySelector('.popup__input_type_card-name');
+const newPlaceInputLink = popupAddNewPlace.querySelector('.popup__input_type_url');
 
 function handleAddNewPlaceSubmit(evt) {
   evt.preventDefault(); 
-  placesList.prepend(addCard(createNewCard(), deleteCard, likeCard, showFullImage));
+  const item = {name: newPlaceInputTitle.value, link: newPlaceInputLink.value};
+  placesList.prepend(addCard(item, deleteCard, likeCard, showFullImage));
+  formAddNewPlace.reset();
   closeModal(popupAddNewPlace);
 }
 
@@ -64,9 +59,9 @@ const imageInputLink = popupShowFullImage.querySelector('.popup__image');
 function showFullImage(name, link){
   imageInputTitle.textContent = name;
   imageInputLink.setAttribute('src', link);
+  imageInputLink.setAttribute('alt', name);
   openModal(popupShowFullImage);
 }
-
 
 // Every popup is animated, close with esc and with button-close
 document.querySelectorAll('.popup').forEach((item)=> {
