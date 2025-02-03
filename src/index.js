@@ -2,7 +2,16 @@ import './pages/index.css'; // импорт главного файла стил
 import {initialCards} from './scripts/cards'
 import {closeModal, openModal} from './scripts/modal'
 import {addCard, deleteCard, likeCard} from './scripts/card'
-import { isValid, validateInputs } from './scripts/validation.js';
+import { enableValidation, clearValidation  } from './scripts/validation.js';
+
+const validationParameters = {
+  formSelector: '.popup__form',
+  inputSelector: '.popup__input',
+  submitButtonSelector: '.popup__button',
+  inactiveButtonClass: 'popup__button_disabled',
+  inputErrorClass: 'popup__input_type_error',
+  errorClass: 'popup__error_visible'
+}
 
 // adding cards on load
 const placesList = document.querySelector(".places__list");
@@ -17,7 +26,7 @@ const formEditProfile = document.forms['edit-profile'];
 buttonProfileEdit.addEventListener('click', ()=> {
   profileEditInputName.value = profileTitle.textContent;
   profileEditInputDescription.value = profileDescription.textContent;
-  validateInputs(formEditProfile);
+  clearValidation(formEditProfile, validationParameters);
   openModal(popupProfileEdit);
 });
 
@@ -46,12 +55,12 @@ function handleAddNewPlaceSubmit(evt) {
   evt.preventDefault(); 
   const item = {name: newPlaceInputTitle.value, link: newPlaceInputLink.value};
   placesList.prepend(addCard(item, deleteCard, likeCard, showFullImage));
-  formAddNewPlace.reset();
   closeModal(popupAddNewPlace);
 }
 
 buttonAddNewPlace.addEventListener('click', ()=> {
   formAddNewPlace.reset();
+  clearValidation(formAddNewPlace, validationParameters);
   openModal(popupAddNewPlace);
 });
 
@@ -82,18 +91,8 @@ document.querySelectorAll('.popup').forEach((item)=> {
 
 // 7 sprint
 
-function setEventListeners(formElement){
-  const inputList = Array.from(formElement.querySelectorAll('.popup__input'));
+enableValidation(validationParameters);
 
-  inputList.forEach(inputElement => {
-    inputElement.addEventListener('input', () => isValid(formElement, inputElement));
-  });
-};
-
-function validateForms(){
-  const forms = Array.from(document.querySelectorAll('.popup__form'));
-
-  forms.forEach(form => setEventListeners(form));
-}
-
-validateForms();
+document.addEventListener('click', (evt) => 
+  console.log(evt.target.validity)
+)

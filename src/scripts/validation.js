@@ -1,34 +1,66 @@
-export function isValid (form, input){
+function isValid (form, input, validationParameters){
   if(input.validity.patternMismatch){
     input.setCustomValidity("Разрешены только латинские, кириллические буквы, знаки дефиса и пробелы")
   } else {
     input.setCustomValidity("");
   }
-  const formButton = form.querySelector('.popup__button');
-  console.log(input.validity)
+
   if(!input.validity.valid){
-     showInputError(form, input, input.validationMessage);
-     formButton.disabled = true;
+    showInputError(form, input, input.validationMessage, validationParameters);
   } else {
-    hideInputError(form, input);
+    hideInputError(form, input, validationParameters);
+  }
+}
+
+const showInputError = (form, input, errorMessage, validationParameters) => {
+  const errorElement = form.querySelector(`#${input.id}-error`);
+  errorElement.textContent = errorMessage; 
+  errorElement.classList.add(validationParameters.errorClass);
+};
+
+function hideInputError(form, input, validationParameters){
+  const errorElement = form.querySelector(`#${input.id}-error`);
+  errorElement.textContent = '';
+  errorElement.classList.remove(validationParameters.errorClass);
+}
+
+function hasInvalidInput(form, validationParameters){
+  const inputList = Array.from(form.querySelectorAll(validationParameters.inputSelector));
+  return inputList.some(item => !item.validity.valid || item.validity.valueMissing);
+}
+
+function toggleFormButton(form, validationParameters){
+  const formButton = form.querySelector(validationParameters.submitButtonSelector);
+  if(hasInvalidInput(form, validationParameters)){
+    formButton.disabled = true;
+  } else {
     formButton.disabled = false;
   }
 }
 
-const showInputError = (form, input, errorMessage) => {
-  const errorElement = form.querySelector(`#${input.id}-error`);
-  errorElement.textContent = errorMessage; 
-  errorElement.classList.add('form__input-error_active');
+function setEventListeners(formElement, validationParameters){
+  const inputList = Array.from(formElement.querySelectorAll(validationParameters.inputSelector));
+
+  inputList.forEach(inputElement => {
+    inputElement.addEventListener('input', () => {
+      isValid(formElement, inputElement, validationParameters);
+      toggleFormButton(formElement, validationParameters);
+    });
+  });
 };
 
-function hideInputError(form, input){
-  const errorElement = form.querySelector(`#${input.id}-error`);
-  errorElement.textContent = '';
-  errorElement.classList.remove('form__input-error_active');
-  
+export function clearValidation(form,validationParameters){
+  const inputList = Array.from(form.querySelectorAll(validationParameters.inputSelector));
+  toggleFormButton(form, validationParameters);
+  inputList.forEach(item => {
+    isValid(form, item, validationParameters);
+    hideInputError(form, item, validationParameters);
+  });
 }
 
-export function validateInputs(form){
-  const inputList = Array.from(form.querySelectorAll('.popup__input'));
-  inputList.forEach(item => isValid(form, item));
-}
+export function enableValidation(validationParameters){
+  const forms = Array.from(document.querySelectorAll(validationParameters.formSelector));
+  forms.forEach(form => {
+    setEventListeners(form, validationParameters)
+  });
+}; 
