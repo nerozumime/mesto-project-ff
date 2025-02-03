@@ -2,6 +2,7 @@ import './pages/index.css'; // импорт главного файла стил
 import {initialCards} from './scripts/cards'
 import {closeModal, openModal} from './scripts/modal'
 import {addCard, deleteCard, likeCard} from './scripts/card'
+import { isValid, validateInputs } from './scripts/validation.js';
 
 // adding cards on load
 const placesList = document.querySelector(".places__list");
@@ -16,7 +17,8 @@ const formEditProfile = document.forms['edit-profile'];
 buttonProfileEdit.addEventListener('click', ()=> {
   profileEditInputName.value = profileTitle.textContent;
   profileEditInputDescription.value = profileDescription.textContent;
-  openModal(popupProfileEdit)
+  validateInputs(formEditProfile);
+  openModal(popupProfileEdit);
 });
 
 const profileInfo = document.querySelector('.profile__info');
@@ -48,7 +50,11 @@ function handleAddNewPlaceSubmit(evt) {
   closeModal(popupAddNewPlace);
 }
 
-buttonAddNewPlace.addEventListener('click', ()=> openModal(popupAddNewPlace));
+buttonAddNewPlace.addEventListener('click', ()=> {
+  formAddNewPlace.reset();
+  openModal(popupAddNewPlace);
+});
+
 formAddNewPlace.addEventListener('submit', handleAddNewPlaceSubmit);
 
 // popupShowFullImage
@@ -73,3 +79,21 @@ document.querySelectorAll('.popup').forEach((item)=> {
   }); 
   item.querySelector('.popup__close').addEventListener('click', ()=>closeModal(item));
 })
+
+// 7 sprint
+
+function setEventListeners(formElement){
+  const inputList = Array.from(formElement.querySelectorAll('.popup__input'));
+
+  inputList.forEach(inputElement => {
+    inputElement.addEventListener('input', () => isValid(formElement, inputElement));
+  });
+};
+
+function validateForms(){
+  const forms = Array.from(document.querySelectorAll('.popup__form'));
+
+  forms.forEach(form => setEventListeners(form));
+}
+
+validateForms();
