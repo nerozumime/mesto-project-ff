@@ -67,7 +67,7 @@ function showFullImage(name, link){
 document.querySelectorAll('.popup').forEach((item)=> {
   item.classList.add('popup_is-animated');
   item.addEventListener('mousedown', (evt) => { 
-    if (evt.target.classList.contains('popup')) { 
+    if (evt.target.classList.contains('popup')) {
       closeModal(item); 
     }; 
   }); 
