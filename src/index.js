@@ -3,7 +3,7 @@ import './pages/index.css'; // импорт главного файла стил
 import {closeModal, openModal} from './scripts/modal'
 import {addCard, deleteCard, likeCard} from './scripts/card'
 import {enableValidation, clearValidation} from './scripts/validation.js';
-import {serverRequestProfileData, serverRequestInitialCardsData ,serverRequestProfileEdit} from './scripts/api.js';
+import {serverRequestProfileData, serverRequestInitialCardsData ,serverRequestProfileEdit,serverRequestAddNewCard} from './scripts/api.js';
 
 const validationParameters = {
   formSelector: '.popup__form',
@@ -48,7 +48,7 @@ function handleProfileEditFormSubmit(evt) {
   })
   .catch(() => {
     console.log('Ошибка получения данных с сервера');
-  })
+  });
 }
 formEditProfile.addEventListener('submit', handleProfileEditFormSubmit);
 
@@ -60,10 +60,16 @@ const newPlaceInputTitle = popupAddNewPlace.querySelector('.popup__input_type_ca
 const newPlaceInputLink = popupAddNewPlace.querySelector('.popup__input_type_url');
 
 function handleAddNewPlaceSubmit(evt) {
-  evt.preventDefault(); 
-  const item = {name: newPlaceInputTitle.value, link: newPlaceInputLink.value};
-  placesList.prepend(addCard(item, deleteCard, likeCard, showFullImage));
-  closeModal(popupAddNewPlace);
+  evt.preventDefault();
+  serverRequestAddNewCard(newPlaceInputTitle.value, newPlaceInputLink.value)
+  .then(() => {
+    const card = {name: newPlaceInputTitle.value, link: newPlaceInputLink.value};
+    placesList.prepend(addCard(card, deleteCard, likeCard, showFullImage));
+    closeModal(popupAddNewPlace);
+  }) 
+  .catch(() => {
+    console.log('Ошибка получения данных с сервера');
+  });
 }
 
 buttonAddNewPlace.addEventListener('click', ()=> {
@@ -114,6 +120,7 @@ Promise.all([serverRequestProfileData(), serverRequestInitialCardsData()])
     profileAvatar.style.backgroundImage = `url(<%=require('${profileData.avatar}')%>)`;
     profileId = profileData._id;
     cardsData.forEach(card => {
+      console.log(card._id);
       placesList.append(addCard(card, deleteCard, likeCard, showFullImage));
     })
   })

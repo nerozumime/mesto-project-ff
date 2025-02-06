@@ -13,3 +13,17 @@
   position: relative;
   overflow: hidden;
 }
+
+.like-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  font-weight: 400;
+  font-size: 13px;
+  color: #000;
+}
+
+.like-counter {
+  display: none;
+}

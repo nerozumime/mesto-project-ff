@@ -5,15 +5,6 @@ const config = {
     'Content-Type': 'application/json'
   }
 }
-// example request
-function serverRequest(){
-  return fetch(`${config.baseUrl}/cards`, {
-    headers: config.headers
-  })
-    .then(res => res.json())
-    .then(res => console.log(res))
-    .catch(() => console.log('Не удалось выполнить запрос'));
-}
 
 export function serverRequestProfileData(){
   return fetch(`${config.baseUrl}/users/me`, {
@@ -24,8 +15,8 @@ export function serverRequestProfileData(){
       if(res.ok){
         return res.json();
       }
+      return Promise.reject(`Ошибка: ${res.status}`);
     })
-    .catch(() => console.log('Не удалось получить данные профиля с сервера'));
 }
 
 export function serverRequestInitialCardsData(){
@@ -57,9 +48,32 @@ export function serverRequestProfileEdit(name, about){
     })
 }
 
-export function serverRequestAddNewCard(){
+export function serverRequestAddNewCard(name, link){
   return fetch(`${config.baseUrl}/cards`,{
     method: 'POST',
+    headers: config.headers,
+    body: JSON.stringify({
+      name: name,
+      link: link
+    })
+  })
+  .then((res) => {
+        if (res.ok) {
+          return res.json();
+        }
+        return Promise.reject(`Ошибка: ${res.status}`);
+    })
+}
+
+export function serverRequestDeleteCardByID(cardId){
+  return fetch(`${config.baseUrl}/cards/${cardId}`, {
+    method: 'DELETE',
     headers: config.headers
   })
+  .then((res) => {
+        if (res.ok) {
+          return res.json();
+        }
+        return Promise.reject(`Ошибка: ${res.status}`);
+    })
 }

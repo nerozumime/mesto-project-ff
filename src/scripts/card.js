@@ -1,3 +1,5 @@
+import {serverRequestDeleteCardByID} from './api.js'
+
 const cardTemplate = document.querySelector("#card-template").content;
 
 export function addCard(item, deleteCard, likeCard, showFullImage) {
@@ -12,8 +14,19 @@ export function addCard(item, deleteCard, likeCard, showFullImage) {
     return card;
 }
 
-export function deleteCard(cardElement) {  
-    cardElement.remove(); 
+export function deleteCard(cardElement) {
+  console.log(cardElement);
+  cardElement.remove(); 
+  /*
+    serverRequestDeleteCardByID(cardElement._id)
+    .then(() => {
+      cardElement.remove(); 
+      console.log(cardElement)
+    })
+    .catch(err => {
+      console.log(err);
+    });
+    */
 }; 
 
 export function likeCard(cardElement) {  
