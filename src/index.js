@@ -46,8 +46,8 @@ function handleProfileEditFormSubmit(evt) {
     profileDescription.textContent = profileEditInputDescription.value;
     closeModal(popupProfileEdit);
   })
-  .catch(() => {
-    console.log('Ошибка получения данных с сервера');
+  .catch((err) => {
+    console.log(err);
   });
 }
 formEditProfile.addEventListener('submit', handleProfileEditFormSubmit);
@@ -62,13 +62,12 @@ const newPlaceInputLink = popupAddNewPlace.querySelector('.popup__input_type_url
 function handleAddNewPlaceSubmit(evt) {
   evt.preventDefault();
   serverRequestAddNewCard(newPlaceInputTitle.value, newPlaceInputLink.value)
-  .then(() => {
-    const card = {name: newPlaceInputTitle.value, link: newPlaceInputLink.value};
-    placesList.prepend(addCard(card, deleteCard, likeCard, showFullImage));
+  .then((card) => {
+    placesList.prepend(addCard(card, card._id, deleteCard, likeCard, showFullImage));
     closeModal(popupAddNewPlace);
   }) 
-  .catch(() => {
-    console.log('Ошибка получения данных с сервера');
+  .catch((err) => {
+    console.log(err);
   });
 }
 
@@ -120,8 +119,9 @@ Promise.all([serverRequestProfileData(), serverRequestInitialCardsData()])
     profileAvatar.style.backgroundImage = `url(<%=require('${profileData.avatar}')%>)`;
     profileId = profileData._id;
     cardsData.forEach(card => {
-      console.log(card._id);
-      placesList.append(addCard(card, deleteCard, likeCard, showFullImage));
+      placesList.append(addCard(card, card._id, deleteCard, likeCard, showFullImage));
     })
   })
-  .catch(res => console.log(res.status));
+  .catch((err) => {
+    console.log(err);
+  });
