@@ -2,8 +2,8 @@ import './pages/index.css'; // импорт главного файла стил
 import {initialCards} from './scripts/cards'
 import {closeModal, openModal} from './scripts/modal'
 import {addCard, deleteCard, likeCard} from './scripts/card'
-import { enableValidation, clearValidation  } from './scripts/validation.js';
-
+import {enableValidation, clearValidation} from './scripts/validation.js';
+import {serverRequest, serverRequestProfileData, serverRequestInitialCardsData,serverRequestProfileEdit} from './scripts/api.js';
 const validationParameters = {
   formSelector: '.popup__form',
   inputSelector: '.popup__input',
@@ -90,9 +90,10 @@ document.querySelectorAll('.popup').forEach((item)=> {
 })
 
 // 7 sprint
-
 enableValidation(validationParameters);
 
-document.addEventListener('click', (evt) => 
-  console.log(evt.target.validity)
-)
+// api
+// serverRequest();
+// serverRequestProfileData();
+// serverRequestInitialCardsData();
+serverRequestProfileEdit();
