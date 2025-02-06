@@ -5,14 +5,14 @@ const config = {
     'Content-Type': 'application/json'
   }
 }
-
-export function serverRequest(){
+// example request
+function serverRequest(){
   return fetch(`${config.baseUrl}/cards`, {
     headers: config.headers
   })
     .then(res => res.json())
     .then(res => console.log(res))
-    .catch(res => console.log('Не вышло'));
+    .catch(() => console.log('Не удалось выполнить запрос'));
 }
 
 export function serverRequestProfileData(){
@@ -20,32 +20,45 @@ export function serverRequestProfileData(){
     method: 'GET',
     headers: config.headers
   })
-    .then(res => res.json())
-    .then(data => console.log(data));
+    .then(res => {
+      if(res.ok){
+        return res.json();
+      }
+    })
+    .catch(() => console.log('Не удалось получить данные профиля с сервера'));
 }
 
 export function serverRequestInitialCardsData(){
   return fetch(`${config.baseUrl}/cards`, {
-    method: 'GET',
-    headers: config.headers
-  })
-    .then(res => res.json())
-    .then(data => console.log(data));
+        headers: config.headers
+    })
+    .then((res) => {
+        if (res.ok) {
+          return res.json();
+        }
+        return Promise.reject(`Ошибка: ${res.status}`);
+    })
 }
 
-export function serverRequestProfileEdit(){
-  fetch(`${config.baseUrl}/users/me`, {
+export function serverRequestProfileEdit(name, about){
+  return fetch(`${config.baseUrl}/users/me`, {
     method: 'PATCH',
     headers: config.headers,
     body: JSON.stringify({
-      name: 'Daniel Lunev',
-      about: 'Frontend developer'
+      name: name,
+      about: about
     })
-  });
+  })
+  .then((res) => {
+        if (res.ok) {
+          return res.json();
+        }
+        return Promise.reject(`Ошибка: ${res.status}`);
+    })
 }
 
 export function serverRequestAddNewCard(){
-  fetch(`${config.baseUrl}/cards`,{
+  return fetch(`${config.baseUrl}/cards`,{
     method: 'POST',
     headers: config.headers
   })

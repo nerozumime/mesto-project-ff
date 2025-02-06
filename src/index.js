@@ -1,9 +1,10 @@
 import './pages/index.css'; // импорт главного файла стилей 
-import {initialCards} from './scripts/cards'
+// import {initialCards} from './scripts/cards'
 import {closeModal, openModal} from './scripts/modal'
 import {addCard, deleteCard, likeCard} from './scripts/card'
 import {enableValidation, clearValidation} from './scripts/validation.js';
-import {serverRequest, serverRequestProfileData, serverRequestInitialCardsData,serverRequestProfileEdit} from './scripts/api.js';
+import {serverRequestProfileData, serverRequestInitialCardsData ,serverRequestProfileEdit} from './scripts/api.js';
+
 const validationParameters = {
   formSelector: '.popup__form',
   inputSelector: '.popup__input',
@@ -15,13 +16,14 @@ const validationParameters = {
 
 // adding cards on load
 const placesList = document.querySelector(".places__list");
-initialCards.forEach(item => placesList.append(addCard(item, deleteCard, likeCard, showFullImage)));
+// initialCards.forEach(item => placesList.append(addCard(item, deleteCard, likeCard, showFullImage)));
 
 // popupEditProfile
 const buttonProfileEdit = document.querySelector('.profile__edit-button');
 const popupProfileEdit = document.querySelector('.popup_type_edit');
 const popupContent = document.querySelector('.popup__content');
 const formEditProfile = document.forms['edit-profile'];
+const profileAvatar = document.querySelector('.profile__image');
 
 buttonProfileEdit.addEventListener('click', ()=> {
   profileEditInputName.value = profileTitle.textContent;
@@ -38,9 +40,15 @@ const profileEditInputDescription = popupContent.querySelector('.popup__input_ty
 
 function handleProfileEditFormSubmit(evt) {
   evt.preventDefault(); 
-  profileDescription.textContent = profileEditInputDescription.value;
-  profileTitle.textContent = profileEditInputName.value;
-  closeModal(popupProfileEdit);
+  serverRequestProfileEdit(profileEditInputName.value, profileEditInputDescription.value)
+  .then(() => {
+    profileTitle.textContent = profileEditInputName.value;
+    profileDescription.textContent = profileEditInputDescription.value;
+    closeModal(popupProfileEdit);
+  })
+  .catch(() => {
+    console.log('Ошибка получения данных с сервера');
+  })
 }
 formEditProfile.addEventListener('submit', handleProfileEditFormSubmit);
 
@@ -93,7 +101,20 @@ document.querySelectorAll('.popup').forEach((item)=> {
 enableValidation(validationParameters);
 
 // api
-// serverRequest();
+
 // serverRequestProfileData();
 // serverRequestInitialCardsData();
-serverRequestProfileEdit();
+
+let profileId;
+
+Promise.all([serverRequestProfileData(), serverRequestInitialCardsData()])
+  .then(([profileData, cardsData]) => {
+    profileTitle.textContent = profileData.name;
+    profileDescription.textContent = profileData.about;
+    profileAvatar.style.backgroundImage = `url(<%=require('${profileData.avatar}')%>)`;
+    profileId = profileData._id;
+    cardsData.forEach(card => {
+      placesList.append(addCard(card, deleteCard, likeCard, showFullImage));
+    })
+  })
+  .catch(res => console.log(res.status));
