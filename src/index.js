@@ -1,9 +1,11 @@
 import './pages/index.css'; // импорт главного файла стилей 
 import {closeModal, openModal} from './scripts/modal'
-import {addCard, deleteCard, likeCard} from './scripts/card'
+import {addCard} from './scripts/card'
 import {enableValidation, clearValidation} from './scripts/validation.js';
-import {serverRequestProfileData, serverRequestInitialCardsData ,serverRequestProfileEdit,
-  serverRequestAddNewCard, serverRequestChangeAvatar} from './scripts/api.js';
+import {
+  serverRequestProfileData, serverRequestInitialCardsData ,serverRequestProfileEdit,
+  serverRequestAddNewCard, serverRequestChangeAvatar, serverRequestDeleteCardByID, 
+  serverRequestPutLike, serverRequestDeleteLike} from './scripts/api.js';
 
 const validationParameters = {
   formSelector: '.popup__form',
@@ -68,7 +70,7 @@ function handleAddNewPlaceSubmit(evt) {
   evt.preventDefault();
   serverRequestAddNewCard(newPlaceInputTitle.value, newPlaceInputLink.value)
   .then((card) => {
-    placesList.prepend(addCard(card, profileId, deleteCard, likeCard, showFullImage));
+    placesList.prepend(addCard(card, profileId, tryDeleteCard, likeCard, showFullImage));
     closeModal(popupAddNewPlace);
   }) 
   .catch((err) => {
@@ -111,7 +113,6 @@ document.querySelectorAll('.popup').forEach((item)=> {
 enableValidation(validationParameters);
 
 // api
-
 Promise.all([serverRequestProfileData(), serverRequestInitialCardsData()])
   .then(([profileData, cardsData]) => {
     profileId = profileData._id;
@@ -119,7 +120,7 @@ Promise.all([serverRequestProfileData(), serverRequestInitialCardsData()])
     profileDescription.textContent = profileData.about;
     profileAvatar.style.backgroundImage = `url('${profileData.avatar}')`;
     cardsData.forEach(card => {
-      placesList.append(addCard(card, profileData._id, deleteCard, likeCard, showFullImage));
+      placesList.append(addCard(card, profileData._id, tryDeleteCard, likeCard, showFullImage));
     })
   })
   .catch((err) => {
@@ -149,3 +150,54 @@ function handleChangeAvatarSubmit(evt){
     });
 }
 formChangeAvatar.addEventListener('submit', handleChangeAvatarSubmit);
+
+
+
+function likeCard(card, cardId) {
+  const likeCounter = card.querySelector('.like-counter');  
+  if(card.querySelector('.card__like-button').classList.contains('card__like-button_is-active')){
+    // remove like 
+    serverRequestDeleteLike(cardId).then((card) => {
+      card.likes.length > 0 ? likeCounter.setAttribute('style', 'opacity: 1;') : likeCounter.setAttribute('style', 'opacity: 0;')
+      likeCounter.textContent = card.likes.length;
+    })
+  } else {
+    // add like
+    serverRequestPutLike(cardId).then((card) => {
+      card.likes.length > 0 ? likeCounter.setAttribute('style', 'opacity: 1;') : likeCounter.setAttribute('style', 'opacity: 0;')
+      likeCounter.textContent = card.likes.length;
+    })
+  }
+  card.querySelector('.card__like-button').classList.toggle('card__like-button_is-active');
+}; 
+
+// popup delete card
+const popupDeleteCard = document.querySelector('.popup_type_delete-card');
+const formDeleteCard = document.forms['delete-card'];
+
+let currCard;
+let currCardId;
+
+function tryDeleteCard(card, cardId) {
+  openModal(popupDeleteCard);
+  currCard = card;
+  currCardId = cardId;
+}; 
+
+function handleDeleteCard(evt){
+  evt.preventDefault();
+  deleteCardFromServer(currCard, currCardId);
+}
+
+formDeleteCard.addEventListener('submit', handleDeleteCard);
+
+function deleteCardFromServer(currCard, currCardId) {
+  serverRequestDeleteCardByID(currCardId)
+  .then(() => {
+    currCard.remove(); 
+    closeModal(popupDeleteCard)
+  })
+  .catch((err) => {
+    console.log(err);
+  });
+}; 

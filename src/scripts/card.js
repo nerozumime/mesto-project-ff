@@ -1,21 +1,19 @@
-import {serverRequestDeleteCardByID, serverRequestPutLike, serverRequestDeleteLike} from './api.js'
-
 const cardTemplate = document.querySelector("#card-template").content;
 
-export function addCard(item, profileId, deleteCard, likeCard, showFullImage) {
+export function addCard(item, profileId, tryDeleteCard, likeCard, showFullImage) {
     const card = cardTemplate.querySelector(".card").cloneNode(true);
 
     const likeCounter = card.querySelector('.like-counter');
     likeCounter.textContent = item.likes.length;
-    item.likes.length > 0 ? likeCounter.setAttribute('style', 'display:block') : likeCounter.setAttribute('style', 'display:none')
+    item.likes.length > 0 ? likeCounter.setAttribute('style', 'opacity: 1;') : likeCounter.setAttribute('style', 'opacity: 0;')
     if(item.likes.some((like) => like._id == profileId)){
       card.querySelector('.card__like-button').classList.add('card__like-button_is-active');
     }
-    
+
     if(item.owner._id !== profileId){
       card.querySelector('.card__delete-button').remove();
     } else {
-      card.querySelector('.card__delete-button').addEventListener('click', () => deleteCard(card, item._id));
+      card.querySelector('.card__delete-button').addEventListener('click', () => tryDeleteCard(card, item._id));
     }
 
     card.querySelector(".card__title").textContent = item.name;
@@ -26,31 +24,6 @@ export function addCard(item, profileId, deleteCard, likeCard, showFullImage) {
     cardImage.addEventListener('click', ()=> showFullImage(item.name, item.link)); 
     return card;
 }
-
-export function deleteCard(cardElement, cardId) {
-  serverRequestDeleteCardByID(cardId)
-  .then(() => {
-    cardElement.remove(); 
-  })
-}; 
-
-export function likeCard(cardElement, cardId) {
-  const likeCounter = cardElement.querySelector('.like-counter');  
-  if(cardElement.querySelector('.card__like-button').classList.contains('card__like-button_is-active')){
-    // remove like 
-    serverRequestDeleteLike(cardId).then((card) => {
-      card.likes.length > 0 ? likeCounter.setAttribute('style', 'display:block') : likeCounter.setAttribute('style', 'display:none')
-      likeCounter.textContent = card.likes.length;
-    })
-  } else {
-    // add like
-    serverRequestPutLike(cardId).then((card) => {
-      card.likes.length > 0 ? likeCounter.setAttribute('style', 'display:block') : likeCounter.setAttribute('style', 'display:none')
-      likeCounter.textContent = card.likes.length;
-    })
-  }
-  cardElement.querySelector('.card__like-button').classList.toggle('card__like-button_is-active');
-}; 
 
 
 

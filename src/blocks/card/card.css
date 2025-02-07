@@ -25,5 +25,5 @@
 }
 
 .like-counter {
-  display: none;
+  opacity: 0;
 }

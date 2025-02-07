@@ -27,6 +27,10 @@ form:invalid .popup__button {
   pointer-events: none;
 }
 
+.popup__button.button_custom-margin {
+  margin-top: 38px;
+}
+
 @media screen and (max-width: 568px) {
   .popup__button {
     font-size: 14px;
