@@ -2,7 +2,8 @@ import './pages/index.css'; // импорт главного файла стил
 import {closeModal, openModal} from './scripts/modal'
 import {addCard, deleteCard, likeCard} from './scripts/card'
 import {enableValidation, clearValidation} from './scripts/validation.js';
-import {serverRequestProfileData, serverRequestInitialCardsData ,serverRequestProfileEdit,serverRequestAddNewCard} from './scripts/api.js';
+import {serverRequestProfileData, serverRequestInitialCardsData ,serverRequestProfileEdit,
+  serverRequestAddNewCard, serverRequestChangeAvatar} from './scripts/api.js';
 
 const validationParameters = {
   formSelector: '.popup__form',
@@ -56,6 +57,8 @@ const popupAddNewPlace = document.querySelector('.popup_type_new-card');
 const newPlaceInputTitle = popupAddNewPlace.querySelector('.popup__input_type_card-name');
 const newPlaceInputLink = popupAddNewPlace.querySelector('.popup__input_type_url');
 
+let profileId;
+
 function handleAddNewPlaceSubmit(evt) {
   evt.preventDefault();
   serverRequestAddNewCard(newPlaceInputTitle.value, newPlaceInputLink.value)
@@ -106,9 +109,10 @@ enableValidation(validationParameters);
 
 Promise.all([serverRequestProfileData(), serverRequestInitialCardsData()])
   .then(([profileData, cardsData]) => {
+    profileId = profileData._id;
     profileTitle.textContent = profileData.name;
     profileDescription.textContent = profileData.about;
-    profileAvatar.style.backgroundImage = `url(<%=require('${profileData.avatar}')%>)`;
+    profileAvatar.style.backgroundImage = `url('${profileData.avatar}')`;
     cardsData.forEach(card => {
       placesList.append(addCard(card, profileData._id, deleteCard, likeCard, showFullImage));
     })
@@ -116,3 +120,27 @@ Promise.all([serverRequestProfileData(), serverRequestInitialCardsData()])
   .catch((err) => {
     console.log(err);
   });
+
+// avatar 
+const popupChangeAvatar = document.querySelector('.popup_type_change-avatar');
+const formChangeAvatar = document.forms['change-avatar'];
+const popupInputChangeAvatar = formChangeAvatar.querySelector('.popup__input_type_avatar');
+
+profileAvatar.addEventListener('click', ()=> {
+  openModal(popupChangeAvatar);
+  formChangeAvatar.reset();
+  clearValidation(formChangeAvatar, validationParameters);
+})
+
+function handleChangeAvatarSubmit(evt){
+  evt.preventDefault();
+  serverRequestChangeAvatar(popupInputChangeAvatar.value)
+    .then(() => {
+      profileAvatar.style.backgroundImage = `url('${popupInputChangeAvatar.value}')`;
+      closeModal(popupChangeAvatar);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+}
+formChangeAvatar.addEventListener('submit', handleChangeAvatarSubmit);
