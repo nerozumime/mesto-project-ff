@@ -38,6 +38,8 @@ const profileEditInputDescription = popupContent.querySelector('.popup__input_ty
 
 function handleProfileEditFormSubmit(evt) {
   evt.preventDefault(); 
+  const saveButton = formEditProfile.querySelector('.popup__button');
+  saveButton.textContent = 'Сохранить...';
   serverRequestProfileEdit(profileEditInputName.value, profileEditInputDescription.value)
   .then(() => {
     profileTitle.textContent = profileEditInputName.value;
@@ -46,7 +48,10 @@ function handleProfileEditFormSubmit(evt) {
   })
   .catch((err) => {
     console.log(err);
-  });
+  })
+  .finally(() => {
+    saveButton.textContent = 'Сохранить';
+  })
 }
 formEditProfile.addEventListener('submit', handleProfileEditFormSubmit);
 
