@@ -3,9 +3,9 @@ import {closeModal, openModal} from './scripts/modal'
 import {addCard} from './scripts/card'
 import {enableValidation, clearValidation} from './scripts/validation.js';
 import {
-  serverRequestProfileData, serverRequestInitialCardsData ,serverRequestProfileEdit,
-  serverRequestAddNewCard, serverRequestChangeAvatar, serverRequestDeleteCardByID, 
-  serverRequestPutLike, serverRequestDeleteLike} from './scripts/api.js';
+  getProfileData, getInitialCardsData ,getProfileEdit,
+  getAddNewCard, changeAvatar, deleteCardByID, 
+  putLike, deleteLike} from './scripts/api.js';
 
 const validationParameters = {
   formSelector: '.popup__form',
@@ -42,7 +42,7 @@ function handleProfileEditFormSubmit(evt) {
   evt.preventDefault(); 
   const saveButton = formEditProfile.querySelector('.popup__button');
   saveButton.textContent = 'Сохранить...';
-  serverRequestProfileEdit(profileEditInputName.value, profileEditInputDescription.value)
+  getProfileEdit(profileEditInputName.value, profileEditInputDescription.value)
   .then(() => {
     profileTitle.textContent = profileEditInputName.value;
     profileDescription.textContent = profileEditInputDescription.value;
@@ -68,19 +68,24 @@ let profileId;
 
 function handleAddNewPlaceSubmit(evt) {
   evt.preventDefault();
-  serverRequestAddNewCard(newPlaceInputTitle.value, newPlaceInputLink.value)
+  const saveButton = formAddNewPlace.querySelector('.popup__button');
+  saveButton.textContent = 'Сохранить...';
+  getAddNewCard(newPlaceInputTitle.value, newPlaceInputLink.value)
   .then((card) => {
     placesList.prepend(addCard(card, profileId, tryDeleteCard, likeCard, showFullImage));
     closeModal(popupAddNewPlace);
+    formAddNewPlace.reset();
+    clearValidation(formAddNewPlace, validationParameters);
   }) 
   .catch((err) => {
     console.log(err);
-  });
+  })
+  .finally(()=> {
+    saveButton.textContent = 'Сохранить';
+  })
 }
 
 buttonAddNewPlace.addEventListener('click', ()=> {
-  formAddNewPlace.reset();
-  clearValidation(formAddNewPlace, validationParameters);
   openModal(popupAddNewPlace);
 });
 
@@ -113,7 +118,7 @@ document.querySelectorAll('.popup').forEach((item)=> {
 enableValidation(validationParameters);
 
 // api
-Promise.all([serverRequestProfileData(), serverRequestInitialCardsData()])
+Promise.all([getProfileData(), getInitialCardsData()])
   .then(([profileData, cardsData]) => {
     profileId = profileData._id;
     profileTitle.textContent = profileData.name;
@@ -140,14 +145,19 @@ profileAvatar.addEventListener('click', ()=> {
 
 function handleChangeAvatarSubmit(evt){
   evt.preventDefault();
-  serverRequestChangeAvatar(popupInputChangeAvatar.value)
+  const saveButton = formChangeAvatar.querySelector('.popup__button');
+  saveButton.textContent = 'Сохранить...';
+  changeAvatar(popupInputChangeAvatar.value)
     .then(() => {
       profileAvatar.style.backgroundImage = `url('${popupInputChangeAvatar.value}')`;
       closeModal(popupChangeAvatar);
     })
     .catch((err) => {
       console.log(err);
-    });
+    })
+    .finally(()=> {
+      saveButton.textContent = 'Сохранить';
+    })
 }
 formChangeAvatar.addEventListener('submit', handleChangeAvatarSubmit);
 
@@ -157,13 +167,13 @@ function likeCard(card, cardId) {
   const likeCounter = card.querySelector('.like-counter');  
   if(card.querySelector('.card__like-button').classList.contains('card__like-button_is-active')){
     // remove like 
-    serverRequestDeleteLike(cardId).then((card) => {
+    deleteLike(cardId).then((card) => {
       card.likes.length > 0 ? likeCounter.setAttribute('style', 'opacity: 1;') : likeCounter.setAttribute('style', 'opacity: 0;')
       likeCounter.textContent = card.likes.length;
     })
   } else {
     // add like
-    serverRequestPutLike(cardId).then((card) => {
+    putLike(cardId).then((card) => {
       card.likes.length > 0 ? likeCounter.setAttribute('style', 'opacity: 1;') : likeCounter.setAttribute('style', 'opacity: 0;')
       likeCounter.textContent = card.likes.length;
     })
@@ -192,7 +202,7 @@ function handleDeleteCard(evt){
 formDeleteCard.addEventListener('submit', handleDeleteCard);
 
 function deleteCardFromServer(currCard, currCardId) {
-  serverRequestDeleteCardByID(currCardId)
+  deleteCardByID(currCardId)
   .then(() => {
     currCard.remove(); 
     closeModal(popupDeleteCard)

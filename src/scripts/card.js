@@ -1,7 +1,11 @@
 const cardTemplate = document.querySelector("#card-template").content;
 
+function getCardTemplate(){
+  return cardTemplate.querySelector(".card").cloneNode(true);
+}
+
 export function addCard(item, profileId, tryDeleteCard, likeCard, showFullImage) {
-    const card = cardTemplate.querySelector(".card").cloneNode(true);
+    const card = getCardTemplate();
 
     const likeCounter = card.querySelector('.like-counter');
     likeCounter.textContent = item.likes.length;
