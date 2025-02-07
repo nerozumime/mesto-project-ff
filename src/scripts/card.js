@@ -7,9 +7,11 @@ export function addCard(item, profileId, deleteCard, likeCard, showFullImage) {
 
     const likeCounter = card.querySelector('.like-counter');
     likeCounter.textContent = item.likes.length;
+    item.likes.length > 0 ? likeCounter.setAttribute('style', 'display:block') : likeCounter.setAttribute('style', 'display:none')
     if(item.likes.some((like) => like._id == profileId)){
-      likeCard(card, item._id);
+      card.querySelector('.card__like-button').classList.add('card__like-button_is-active');
     }
+    
     if(item.owner._id !== profileId){
       card.querySelector('.card__delete-button').remove();
     } else {
