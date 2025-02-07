@@ -1,10 +1,8 @@
 import './pages/index.css'; // импорт главного файла стилей 
-// import {initialCards} from './scripts/cards'
 import {closeModal, openModal} from './scripts/modal'
 import {addCard, deleteCard, likeCard} from './scripts/card'
 import {enableValidation, clearValidation} from './scripts/validation.js';
-import {serverRequestProfileData, serverRequestInitialCardsData ,serverRequestProfileEdit,serverRequestAddNewCard,
-  serverRequestPutLike, serverRequestDeleteLike} from './scripts/api.js';
+import {serverRequestProfileData, serverRequestInitialCardsData ,serverRequestProfileEdit,serverRequestAddNewCard} from './scripts/api.js';
 
 const validationParameters = {
   formSelector: '.popup__form',
@@ -15,9 +13,7 @@ const validationParameters = {
   errorClass: 'popup__error_visible'
 }
 
-// adding cards on load
 const placesList = document.querySelector(".places__list");
-// initialCards.forEach(item => placesList.append(addCard(item, deleteCard, likeCard, showFullImage)));
 
 // popupEditProfile
 const buttonProfileEdit = document.querySelector('.profile__edit-button');
@@ -64,7 +60,7 @@ function handleAddNewPlaceSubmit(evt) {
   evt.preventDefault();
   serverRequestAddNewCard(newPlaceInputTitle.value, newPlaceInputLink.value)
   .then((card) => {
-    placesList.prepend(addCard(card, card._id, card.likes, deleteCard, likeCard, showFullImage));
+    placesList.prepend(addCard(card, profileId, deleteCard, likeCard, showFullImage));
     closeModal(popupAddNewPlace);
   }) 
   .catch((err) => {
@@ -108,19 +104,13 @@ enableValidation(validationParameters);
 
 // api
 
-// serverRequestProfileData();
-// serverRequestInitialCardsData();
-
-let profileId;
-
 Promise.all([serverRequestProfileData(), serverRequestInitialCardsData()])
   .then(([profileData, cardsData]) => {
     profileTitle.textContent = profileData.name;
     profileDescription.textContent = profileData.about;
     profileAvatar.style.backgroundImage = `url(<%=require('${profileData.avatar}')%>)`;
-    profileId = profileData._id;
     cardsData.forEach(card => {
-      placesList.append(addCard(card, card._id, card.likes, deleteCard, likeCard, showFullImage));
+      placesList.append(addCard(card, profileData._id, deleteCard, likeCard, showFullImage));
     })
   })
   .catch((err) => {
