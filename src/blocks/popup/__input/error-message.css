@@ -3,8 +3,13 @@
   font-weight: 400;
   font-size: 12px;
   color: #f00;
+  position: absolute;
 }
 
 .popup__error_visible {
   display: block;
+}
+
+.form__input-error:not(:last-of-type){
+  margin-bottom: 5px;
 }
