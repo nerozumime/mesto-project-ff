@@ -11,16 +11,29 @@
   cursor: pointer;
 }
 
-.profile__image:hover::before{
+.profile__image:hover::before {
   opacity: 0.8;
 }
 
-.profile__image::before {
-  content: '';
+.profile__image::before,
+.profile__image::after {
+  content: "";
   position: absolute;
-  background: black url(/src/images/avatar-edit.svg) no-repeat center / 26px;
   opacity: 0;
   inset: 0;
+}
+
+.profile__image::before {
+  background-color: black;
+}
+
+.profile__image::after {
+  background: url(/src/images/avatar-edit.svg) no-repeat center / 26px;
+}
+
+.profile__image:hover::after {
+  content: "";
+  opacity: 1;
 }
 
 @media screen and (max-width: 740px) {

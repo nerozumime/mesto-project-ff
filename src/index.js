@@ -211,3 +211,6 @@ function deleteCardFromServer(currCard, currCardId) {
     console.log(err);
   });
 }; 
+
+
+console.log(document.querySelector("#card-template").content.querySelector(".card").cloneNode(true));

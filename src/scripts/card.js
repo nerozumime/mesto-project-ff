@@ -2,6 +2,7 @@ const cardTemplate = document.querySelector("#card-template").content;
 
 function getCardTemplate(){
   return cardTemplate.querySelector(".card").cloneNode(true);
+  console.log(cardTemplate);
 }
 
 export function addCard(item, profileId, tryDeleteCard, likeCard, showFullImage) {
