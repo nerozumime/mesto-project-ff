@@ -17,13 +17,13 @@ export function getProfileData() {
   return fetch(`${config.baseUrl}/users/me`, {
     method: "GET",
     headers: config.headers,
-  }).then((res) => checkResStatus(res));
+  }).then(checkResStatus);
 }
 
 export function getInitialCardsData() {
   return fetch(`${config.baseUrl}/cards`, {
     headers: config.headers,
-  }).then((res) => checkResStatus(res));
+  }).then(checkResStatus);
 }
 
 export function getProfileEdit(name, about) {
@@ -34,7 +34,7 @@ export function getProfileEdit(name, about) {
       name: name,
       about: about,
     }),
-  }).then((res) => checkResStatus(res));
+  }).then(checkResStatus);
 }
 
 export function getAddNewCard(name, link) {
@@ -45,28 +45,28 @@ export function getAddNewCard(name, link) {
       name: name,
       link: link,
     }),
-  }).then((res) => checkResStatus(res));
+  }).then(checkResStatus);
 }
 
 export function deleteCardByID(cardId) {
   return fetch(`${config.baseUrl}/cards/${cardId}`, {
     method: "DELETE",
     headers: config.headers,
-  }).then((res) => checkResStatus(res));
+  }).then(checkResStatus);
 }
 
 export function putLike(cardId) {
   return fetch(`${config.baseUrl}/cards/likes/${cardId}`, {
     method: "PUT",
     headers: config.headers,
-  }).then((res) => checkResStatus(res));
+  }).then(checkResStatus);
 }
 
 export function deleteLike(cardId) {
   return fetch(`${config.baseUrl}/cards/likes/${cardId}`, {
     method: "DELETE",
     headers: config.headers,
-  }).then((res) => checkResStatus(res));
+  }).then(checkResStatus);
 }
 
 export function changeAvatar(avatar) {
@@ -76,5 +76,5 @@ export function changeAvatar(avatar) {
     body: JSON.stringify({
       avatar: avatar,
     }),
-  }).then((res) => checkResStatus(res));
+  }).then(checkResStatus);
 }
